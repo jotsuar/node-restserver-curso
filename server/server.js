@@ -1,34 +1,28 @@
-require('./config/config')
+require('./config/config');
+require('mongoose');
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
+
+app.use(require('./routes/usuario'));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
  
 // parse application/json
 app.use(bodyParser.json())
+
+const mongoose = require('mongoose');
  
-app.post('/usuario', function (req, res) {
-    let body = req.body;
-    res.status(200);    
-    res.json({
-        body
-    })
-})
-
-app.get('/usuario', function (req, res) {
-    res.json('getusuario')
-  })
-
-  app.put('/usuario/:id', function (req, res) {
-      let id = req.params.id;
-    res.json({
-        id,
-    })
-  })
-
+//mongoose.connect('mongodb://localhost:27017/cafe', {useNewUrlParser: true});
+mongoose.connect(process.env.urlDB, {useNewUrlParser: true, useCreateIndex: true},(err)=>{
+    if(err) throw err;
+    console.log(process.env.urlDB)
+    console.log("database online")
+});
 
 app.listen(process.env.PORT, ()=>{
     console.log("Escuchando puerto: " + process.env.PORT)
 })
+
