@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const _ = require("underscore");
 
+const { verificaToken,verificaRol_admin } = require("../middlewares/autenticacion")
 const Usuario = require('../models/usuario');
 
 // parse application/x-www-form-urlencoded
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.post('/usuario', function (req, res) {
+app.post('/usuario', [verificaToken,verificaRol_admin], function (req, res) {
     let body = req.body;
     
     let usuario = new Usuario({
@@ -37,7 +38,7 @@ app.post('/usuario', function (req, res) {
     } )
 })
 
-app.get('/usuario', function (req, res) {
+app.get('/usuario', verificaToken, (req, res)=>{
     let desde = req.query.desde  || 0;
     let limite = req.query.limite || 5;
     desde = Number(desde);
@@ -66,7 +67,7 @@ app.get('/usuario', function (req, res) {
     })
 })
 
-app.delete('/usuario/:id', function (req, res) {
+app.delete('/usuario/:id', verificaToken, function (req, res) {
     let id = req.params.id;
     let body = {
         estado: true,
@@ -112,7 +113,7 @@ app.delete('/usuario/:id', function (req, res) {
     })
 })
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id', [verificaToken,verificaRol_admin], function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body,['nombre','email','img','role','estado']);
 
