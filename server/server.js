@@ -4,6 +4,7 @@ require('mongoose');
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
+const path = require('path');
 
 app.use(require('./routes/index'));
 
@@ -12,6 +13,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
  
 // parse application/json
 app.use(bodyParser.json())
+
+app.use(express.static(path.resolve(__dirname,'../public')))
 
 const mongoose = require('mongoose');
  
