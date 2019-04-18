@@ -34,7 +34,23 @@ let verificaRol_admin = (req, res, next) => {
 
 };
 
+let verificaTokenImg = (req, res, next) => {
+    let token = req.query.token;
+    jwt.verify(token, process.env.SEED, (err, data) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err
+            })
+        }
+        req.usuario = data.usuario;
+        next();
+    })
+
+};
+
 module.exports = {
     verificaToken,
-    verificaRol_admin
+    verificaRol_admin,
+    verificaTokenImg
 }
